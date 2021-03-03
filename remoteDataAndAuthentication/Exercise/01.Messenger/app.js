@@ -15,7 +15,7 @@ async function sendRequest() {
     if (name === '' || message === '') {
         return alert('All fields are required');
     }
-    const data = { author: name.value, content: message.value };
+    const data = { author: name.value.trim(), content: message.value.trim() };
 
     const response = await fetch(url, {
         method: 'post',
