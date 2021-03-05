@@ -12,7 +12,7 @@ async function sendRequest() {
     const name = document.getElementById('author');
     const message = document.getElementById('content');
 
-    if (name === '' || message === '') {
+    if (name.value === '' || message.value === '') {
         return alert('All fields are required');
     }
     const data = { author: name.value.trim(), content: message.value.trim() };
