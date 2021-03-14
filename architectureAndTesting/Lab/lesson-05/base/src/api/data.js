@@ -7,8 +7,8 @@ export const login = api.login;
 export const register = api.register;
 export const logout = api.logout;
 
-export async function getRecipes() {
-    return await api.get(host + '/data/recipes?select=' + encodeURIComponent('_id,name,img'));
+export async function getRecipes(page) {
+    return await api.get(host + '/data/recipes?select=' + encodeURIComponent('_id,name,img') + `&offset=${(page - 1) * 5}&pageSize=5`);
 }
 
 export async function getRecipeById(id) {
@@ -25,6 +25,14 @@ export async function editRecipeById(id, recipe) {
 
 export async function deleteRecipeById(id) {
     return await api.del(host + '/data/recipes/' + id);
+}
+
+export async function getRecipeCount() {
+    return api.get(host + '/data/recipes?count');
+}
+
+export async function getRecent() {
+    return api.get(host + '/data/recipes?select=_id%2Cname%2Cimg&sortBy=_createdOn%20desc&pageSize=3');
 }
 
 
