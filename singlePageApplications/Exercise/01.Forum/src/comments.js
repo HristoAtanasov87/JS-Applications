@@ -40,7 +40,7 @@ function renderPost(data) {
 function renderComments(data) {
     const element = e('div', { className: 'comment' },
         e('header', { className: 'header' },
-            e('p', {}, [e('span', {}, `${data.username}`), 'posted on', e('time', {}, `${data.date}`)])
+            e('p', {}, [e('span', {}, `${data.username}`), ' posted on ', e('time', {}, `${data.date}`)])
         ),
         e('div', { className: 'comment-main' },
             e('div', { className: 'userdetails' },
@@ -73,11 +73,14 @@ export function setupComments(mainTarget, sectionTarget, formComments) {
 function postComment(event) {
     event.preventDefault();
 
+    const date = new Date().toLocaleString();
+
     const formData = new FormData(event.target);
     const post = {
         'postText': formData.get('postText'),
         'username': formData.get('username'),
-        commentId: postId
+        commentId: postId,
+        date
     }
 
     if (post.username === '' || post.postText === '') {
