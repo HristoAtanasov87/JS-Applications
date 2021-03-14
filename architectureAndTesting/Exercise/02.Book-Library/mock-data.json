@@ -1,0 +1,12 @@
+{
+    "books": [
+        {
+            "author": "J.K.Rowling",
+            "title": "Harry Potter and the Philosopher's Stone"
+        },
+        {
+            "author": "Svetlin Nakov",
+            "title": "C# Fundamentals"
+        }
+    ]
+}
