@@ -21,7 +21,7 @@ describe('E2E tests', function () {
     this.timeout(30000);
 
     before(async () => {
-        browser = await chromium.launch({ headless: true, slowMo: 2000 });
+        browser = await chromium.launch({ headless: false, slowMo: 2000 });
     });
 
     after(async () => {
@@ -87,8 +87,8 @@ describe('E2E tests', function () {
             const isVisible = await page.isVisible('#editForm');
             expect(isVisible).to.be.true;
 
-            // const [title] = await page.$$eval('#editForm >> [name="title"]', (title) => title.map(v => v.value));
-            // const [author] = await page.$$eval('#editForm >> [name="author"]', (author) => author.map(v => v.value));
+            // const [title] = await page.$$eval('[name="title"]', (title) => title.map(v => v.value));
+            // const [author] = await page.$$eval('[name="author"]', (author) => author.map(v => v.value));
 
             const title = await page.getAttribute('[name="title"]', 'value');
             const author = await page.getAttribute('[name="author"]', 'value');
