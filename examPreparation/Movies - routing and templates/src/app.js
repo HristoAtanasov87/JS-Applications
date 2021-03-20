@@ -12,6 +12,7 @@ import { registerPage } from '../views/register.js';
 import { logout } from './api/api.js';
 
 page('/', decorateContext, homePage);
+page('/index.html', decorateContext, homePage);
 page('/home', decorateContext, homePage);
 page('/create', decorateContext, createPage);
 page('/details/:id', decorateContext, detailsPage);
