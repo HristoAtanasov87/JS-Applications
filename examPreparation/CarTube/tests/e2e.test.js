@@ -3,6 +3,7 @@ const { chromium } = require('playwright-chromium');
 const { expect } = require('chai');
 
 const host = 'http://localhost:3000'; // Application host (NOT service host - that can be anything)
+const interval = 300;
 const DEBUG = false;
 const slowMo = 500;
 
@@ -47,15 +48,15 @@ describe('E2E tests', function () {
             const isCalled = post().isHandled;
 
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=Register');
 
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             await page.click('[type="submit"]');
 
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
 
             expect(isCalled()).to.be.false;
         });
@@ -66,10 +67,10 @@ describe('E2E tests', function () {
             const { onRequest } = post(data);
 
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=Register');
 
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             await page.fill('[name="username"]', data.username);
@@ -93,10 +94,10 @@ describe('E2E tests', function () {
             const { onRequest } = post(data);
 
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=Login');
 
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             await page.fill('[name="username"]', data.username);
@@ -122,7 +123,7 @@ describe('E2E tests', function () {
 
             await page.goto(host);
             await page.click('text=Login');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
             await page.fill('[name="username"]', data.username);
             await page.fill('[name="password"]', data.password);
@@ -132,7 +133,7 @@ describe('E2E tests', function () {
                 page.click('[type="submit"]')
             ]);
 
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
 
             const [request] = await Promise.all([
                 onRequest(),
@@ -150,9 +151,9 @@ describe('E2E tests', function () {
             // Login user
             const data = mockData.users[0];
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=Login');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             await page.fill('[name="username"]', data.username);
@@ -161,7 +162,7 @@ describe('E2E tests', function () {
             await page.click('[type="submit"]');
 
             //Test for navigation
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
 
             expect(await page.isVisible('nav >> text=All Listings')).to.be.true;
             expect(await page.isVisible('nav >> text=By Year')).to.be.true;
@@ -176,7 +177,7 @@ describe('E2E tests', function () {
 
         it('guest user should see correct navigation [ 2.5 Points ]', async () => {
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
 
             expect(await page.isVisible('nav >> text=All Listings')).to.be.true;
             expect(await page.isVisible('nav >> text=By Year')).to.be.true;
@@ -193,7 +194,7 @@ describe('E2E tests', function () {
     describe('Catalog [ 25 Points ]', () => {
         it('loads static home page [ 5 Points ]', async () => {
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
 
             await page.waitForSelector('text=Welcome To Car Tube');
 
@@ -203,9 +204,9 @@ describe('E2E tests', function () {
 
         it('show all listings [ 10 Points ]', async () => {
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
 
             const titles = await page.$$eval('#car-listings .listing h2', t => t.map(s => s.textContent));
@@ -216,16 +217,16 @@ describe('E2E tests', function () {
             expect(titles[2]).to.contains('brand3 model3');
         });
 
-        it('show meme details [ 5 Points ]', async () => {
+        it('show car details [ 5 Points ]', async () => {
             const data = mockData.catalog[0];
 
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
-            await page.click('.listing:first-child >> text=Details');
-            await page.waitForTimeout(100);
+            await page.click('.listing:has-text("brand1") >> text=Details');
+            await page.waitForTimeout(interval);
             await page.waitForSelector('.details-info');
 
             expect(await page.getAttribute('.details-info img', 'src')).to.contains(data.imageUrl);
@@ -237,12 +238,12 @@ describe('E2E tests', function () {
 
         it('guest does NOT see edit/delete buttons [ 5 Points ]', async () => {
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
-            await page.click('.listing:first-child >> text=Details');
-            await page.waitForTimeout(100);
+            await page.click('.listing:has-text("brand1") >> text=Details');
+            await page.waitForTimeout(interval);
             await page.waitForSelector('.details-info');
 
             expect(await page.isVisible('text="Delete"')).to.be.false;
@@ -256,14 +257,14 @@ describe('E2E tests', function () {
         beforeEach(async () => {
             const data = mockData.users[0];
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=Login');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
             await page.fill('[name="username"]', data.username);
             await page.fill('[name="password"]', data.password);
             await page.click('[type="submit"]');
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(interval);
         });
 
         it('create does NOT work with empty fields [ 5 Points ]', async () => {
@@ -271,12 +272,12 @@ describe('E2E tests', function () {
             const isCalled = post().isHandled;
 
             await page.click('text="Create Listing"');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             page.click('[type="submit"]');
 
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
 
             expect(isCalled()).to.be.false;
         });
@@ -287,7 +288,7 @@ describe('E2E tests', function () {
             const { onRequest } = post();
 
             await page.click('text="Create Listing"');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             await page.fill('[name="brand"]', data.brand);
@@ -314,10 +315,10 @@ describe('E2E tests', function () {
 
         it('non-author does NOT see delete and edit buttons [ 2.5 Points ]', async () => {
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
             await page.click('.listing:has-text("brand3") >> text=Details');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('.details-info');
 
             expect(await page.isVisible('text="Delete"')).to.be.false;
@@ -326,10 +327,10 @@ describe('E2E tests', function () {
 
         it('author sees delete and edit buttons [ 2.5 Points ]', async () => {
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
             await page.click('.listing:has-text("brand1") >> text=Details');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('.details-info');
 
             expect(await page.isVisible('text="Delete"')).to.be.true;
@@ -342,21 +343,22 @@ describe('E2E tests', function () {
             const data = mockData.catalog[0];
             const { get, del } = await handle(endpoints.delete(data._id));
             get(data);
-            const { onRequest, isHandled } = del();
+            const { onResponse, isHandled } = del();
 
             await page.click('text=All Listings');
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(interval);
+
             await page.waitForSelector('#car-listings');
             await page.click('.listing:has-text("brand1") >> text=Details');
-            await page.waitForTimeout(300);
-            await page.waitForSelector('.details-info');
+            await page.waitForTimeout(interval);
 
-            await page.waitForTimeout(300);
+            await page.waitForSelector('.details-info');
+            await page.waitForTimeout(interval);
 
             page.on('dialog', dialog => dialog.accept());
 
             await Promise.all([
-                onRequest(),
+                onResponse(),
                 page.click('text="Delete"')
             ]);
 
@@ -370,15 +372,17 @@ describe('E2E tests', function () {
             const { isHandled } = put();
 
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
+
             await page.waitForSelector('#car-listings');
             await page.click('.listing:has-text("brand1") >> text=Details');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
+
             await page.waitForSelector('.details-info');
             await page.click('text=Edit');
-            await page.waitForTimeout(100);
-            await page.waitForSelector('form');
+            await page.waitForTimeout(interval);
 
+            await page.waitForSelector('form');
             await page.fill('[name="brand"]', '');
             await page.fill('[name="model"]', '');
             await page.fill('[name="description"]', '');
@@ -387,6 +391,7 @@ describe('E2E tests', function () {
             await page.fill('[name="price"]', '');
 
             await page.click('[type="submit"]');
+            await page.waitForTimeout(interval);
 
             expect(isHandled()).to.be.false;
         });
@@ -397,13 +402,13 @@ describe('E2E tests', function () {
             get(data);
 
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
             await page.click('.listing:has-text("brand1") >> text=Details');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('.details-info');
             await page.click('text=Edit');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             const inputs = await page.$$eval('.container input', t => t.map(i => i.value));
@@ -422,13 +427,13 @@ describe('E2E tests', function () {
             const { onRequest } = put();
 
             await page.click('text=All Listings');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('#car-listings');
             await page.click('.listing:has-text("brand1") >> text=Details');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('.details-info');
             await page.click('text=Edit');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
 
             await page.fill('[name="brand"]', data.brand + 'edit');
@@ -460,14 +465,14 @@ describe('E2E tests', function () {
         beforeEach(async () => {
             const data = mockData.users[0];
             await page.goto(host);
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.click('text=Login');
-            await page.waitForTimeout(100);
+            await page.waitForTimeout(interval);
             await page.waitForSelector('form');
             await page.fill('[name="username"]', data.username);
             await page.fill('[name="password"]', data.password);
             await page.click('[type="submit"]');
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(interval);
         });
 
         it('check profile page for with 0 listings [ 5 Points ]', async () => {
@@ -475,8 +480,7 @@ describe('E2E tests', function () {
             get([]);
 
             await page.click('text=My Listings');
-            await page.waitForTimeout(300);
-
+            await page.waitForTimeout(interval);
 
             const visible = await page.isVisible('text=You haven\'t listed any cars yet');
             expect(visible).to.be.true;
@@ -487,8 +491,7 @@ describe('E2E tests', function () {
             get(mockData.catalog.slice(0, 2));
 
             await page.click('text=My Listings');
-            await page.waitForTimeout(300);
-
+            await page.waitForTimeout(interval);
 
             const titles = await page.$$eval('#my-listings .listing h2', t => t.map(s => s.textContent));
 
@@ -496,6 +499,49 @@ describe('E2E tests', function () {
             expect(titles[0]).to.contains('brand1 model1');
             expect(titles[1]).to.contains('brand2 model2');
         });
+    });
+
+    describe('Search Page [ 5 Points ]', async () => {
+
+        it('show no matches [ 2.5 Points ]', async () => {
+            await handle(endpoints.search('2010'), { get: [] });
+
+            await page.goto(host);
+            await page.waitForTimeout(interval);
+
+            await page.click('text=By Year');
+            await page.waitForTimeout(interval);
+
+            await page.fill('#search-input', '2010');
+            await page.click('button:has-text("Search")');
+            await page.waitForTimeout(interval);
+
+            const matches = await page.$$eval('.listing h2', t => t.map(s => s.textContent));
+
+            expect(matches.length).to.be.equal(0);
+        });
+
+        it('show results [ 2.5 Points ]', async () => {
+            await handle(endpoints.search('2010'), { get: mockData.catalog.slice(0, 2) });
+
+            await page.goto(host);
+            await page.waitForTimeout(interval);
+
+            await page.click('text=By Year');
+            await page.waitForTimeout(interval);
+
+            await page.fill('#search-input', '2010');
+            await page.click('button:has-text("Search")');
+            await page.waitForTimeout(interval);
+
+            const matches = await page.$$eval('.listing h2', t => t.map(s => s.textContent));
+
+            expect(matches.length).to.equal(2);
+            expect(matches[0]).to.contains('brand1 model1');
+            expect(matches[1]).to.contains('brand2 model2');
+        });
+
+
     });
 
 });
